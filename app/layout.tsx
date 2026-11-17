@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque } from 'next/font/google';
 import './globals.css';
 import SmoothScroll from '../components/SmoothScroll';
@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: 'YoutubeADwords | YouTube & Google Ads Services',
   description: 'YouTube views, subscribers, likes, watch hours and Google Ads campaigns.',
 };
+
+// viewport-fit=cover lets the tab bar and sticky buy bars sit above the iPhone home indicator.
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, viewportFit: 'cover', themeColor: '#f3e9e0' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <html lang="en" className={logoFont.variable}><body><SmoothScroll />{children}</body></html>;

@@ -106,6 +106,18 @@ const PAGES = [
     chat: { incoming: 'Share a public link only, never a password. After ordering, follow delivery from My Orders.', outgoing: 'Ready to grow 🚀', button: ['Need help? Contact support', '/contact'] },
     info: [['Service', '—', 'service'], ['Package', '—', 'package'], ['Total', '—', 'total']],
     faq: true,
+    // Phones get the app-style checkout from components/Commerce.tsx; desktop keeps this form.
+    phoneMount: 'checkout',
+  },
+  // Phone purchase step after "Buy now" (rendered by components/Commerce.tsx).
+  {
+    key: 'get-started', route: '/get-started', title: 'Get Started | YoutubeADwords', description: 'Share your link and email, confirm your package and continue to checkout.',
+    badge: 'Get started', words: ['Your', 'order', 'starts'], script: 'here', sticker: 'No passwords',
+    subtitle: 'Share your public link and email, confirm your package, then review and pay at checkout.',
+    mount: 'get-started',
+    chat: { incoming: 'Share a public link only, never a password. Delivery starts once payment is confirmed.', outgoing: 'Ready to grow 🚀', button: ['Need help? Contact support', '/contact'] },
+    info: [['Step 1 of 2', 'Your link and package'], ['Next', 'Review and pay securely'], ['Support', '24/7 · Replies within 24 hours']],
+    faq: false,
   },
 ];
 
@@ -127,6 +139,15 @@ function buildPage(spec) {
 
   // Form card
   const form = $('form').first();
+  if (spec.mount) {
+    form.replaceWith(`<div class="yaw-mount" data-yaw-mount="${spec.mount}"></div>`);
+    buildSide($, spec);
+    return finish($, data, spec);
+  }
+  if (spec.phoneMount) {
+    form.attr('data-yaw-desktop-only', '');
+    form.after(`<div class="yaw-mount" data-yaw-phone-only data-yaw-mount="${spec.phoneMount}"></div>`);
+  }
   form.attr('data-yaw-form', spec.kind).attr('novalidate', null);
   form.children('input, noscript').remove();
   form.find('[data-framer-name="Title"] h2').first().text(spec.formTitle);
@@ -178,7 +199,11 @@ function buildPage(spec) {
     buttonBox.replaceWith(group);
   } else buttonBox.find('button p').text(spec.submit);
 
-  // Side card
+  buildSide($, spec);
+  finish($, data, spec);
+}
+
+function buildSide($, spec) {
   const side = $('[data-framer-name="Right"]').filter((i, e) => $(e).find('[data-framer-name="Avatar"]').length).first();
   side.find('[data-framer-name="Avatar"] img').attr('src', '/assets/yaw-mark.svg').attr('alt', 'YoutubeADwords');
   const chat = side.find('[data-framer-name="Bottom"]').first();
@@ -192,7 +217,11 @@ function buildPage(spec) {
     ps.eq(1).text(value || '');
     if (key) ps.eq(1).attr('data-checkout', key);
   });
+  // The desktop form fills these summary rows; on phones the checkout shows its own summary.
+  if (spec.phoneMount) side.children('[data-framer-name="Bottom"]').attr('data-yaw-desktop-only', '');
+}
 
+function finish($, data, spec) {
   if (!spec.faq) $('section').filter((i, e) => $(e).find('[data-framer-name="Question"]').length).remove();
   if (spec.kind === 'checkout') $.root().append(`<script type="application/json" id="yaw-catalog">${JSON.stringify(checkoutCatalog).replace(/</g, '\\u003c')}</script>`);
 

@@ -258,5 +258,10 @@
     "route": "/checkout",
     "key": "checkout",
     "title": "Checkout | YoutubeADwords"
+  },
+  {
+    "route": "/get-started",
+    "key": "get-started",
+    "title": "Get Started | YoutubeADwords"
   }
 ]

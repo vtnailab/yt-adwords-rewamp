@@ -202,13 +202,26 @@ export default function TemplateInteractions({ route }: {route:string}) {
 
     all(root,'[data-framer-name="Menu Button"]').forEach(button=>{
       let menu:HTMLElement|null=null;
-      const close=()=>{menu?.remove();menu=null;button.setAttribute('aria-expanded','false');};
+      const close=()=>{menu?.remove();menu=null;document.documentElement.classList.remove('yaw-locked');button.setAttribute('aria-expanded','false');};
       action(button,()=>{
         if(menu){close();return;}
-        menu=document.createElement('nav');menu.className='clone-mobile-menu';menu.setAttribute('aria-label','Main navigation');
-        const links=[['YouTube','/youtube-services/'],['Google Ads','/google-ads/'],['About','/about-us/'],['Blog','/blog/'],['Contact','/contact/'],['My Orders','/orders/'],['Login','/login/']];
-        links.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;menu!.appendChild(a);});
-        document.body.appendChild(menu);button.setAttribute('aria-expanded','true');
+        // App-style phone menu: every service one tap away, then company and account links.
+        menu=document.createElement('nav');menu.className='clone-mobile-menu';menu.setAttribute('aria-label','Main navigation');menu.setAttribute('data-lenis-prevent','');
+        const groups:[string,[string,string][]][]=[
+          ['YouTube services',[['Buy YouTube Views','/buy-youtube-views/'],['Buy YouTube Subscribers','/buy-youtube-subscribers/'],['Buy YouTube Likes','/buy-youtube-likes/'],['Buy YouTube Watch Hours','/buy-youtube-watch-hours/']]],
+          ['Google Ads services',[['Google Skip Ads Views','/buy-google-skip-ads-views/'],['Google Display Ads Views','/buy-google-display-ads-views/'],['Google Apps Download','/buy-google-apps-download/'],['Website / App Traffic','/buy-google-ads-website-traffic/']]],
+          ['Company',[['About Us','/about-us/'],['Blog','/blog/'],['Tickets / Support','/contact/']]],
+        ];
+        groups.forEach(([title,links])=>{
+          const group=document.createElement('div');group.className='clone-mobile-group';
+          const h=document.createElement('p');h.textContent=title;group.appendChild(h);
+          links.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;if(location.pathname===href)a.setAttribute('aria-current','page');group.appendChild(a);});
+          menu!.appendChild(group);
+        });
+        const account=document.createElement('div');account.className='clone-mobile-account';
+        [['My Orders','/orders/'],['Login','/login/']].forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;account.appendChild(a);});
+        menu.appendChild(account);
+        document.body.appendChild(menu);document.documentElement.classList.add('yaw-locked');button.setAttribute('aria-expanded','true');
         if(!reduced)animate(menu,{opacity:[0,1],y:[-12,0]},{duration:.25});
       },'Toggle navigation');
       button.setAttribute('aria-expanded','false');

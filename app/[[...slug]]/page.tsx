@@ -3,6 +3,7 @@ import path from 'node:path';
 import { notFound } from 'next/navigation';
 import routes from '../../data/routes.json';
 import TemplateInteractions from '../../components/TemplateInteractions';
+import Commerce from '../../components/Commerce';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -24,5 +25,6 @@ export default async function Page({ params }: { params: Promise<{ slug?: string
     <style dangerouslySetInnerHTML={{ __html: data.css }} />
     <div id="template-root" dangerouslySetInnerHTML={{ __html: data.html }} />
     <TemplateInteractions route={data.route} />
+    <Commerce route={data.route} />
   </>;
 }

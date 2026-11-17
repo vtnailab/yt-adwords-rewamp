@@ -15,7 +15,12 @@ export default function SmoothScroll() {
       // Let scrollable overlays (e.g. the mobile menu) scroll natively.
       prevent: node => node.classList.contains('clone-mobile-menu'),
     });
-    return () => lenis.destroy();
+    // Pause smooth scrolling while the cart drawer or phone menu locks the page.
+    const root = document.documentElement;
+    const sync = () => (root.classList.contains('yaw-locked') ? lenis.stop() : lenis.start());
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+    return () => { observer.disconnect(); lenis.destroy(); };
   }, []);
   return null;
 }
