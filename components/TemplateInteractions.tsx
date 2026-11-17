@@ -229,47 +229,6 @@ export default function TemplateInteractions({ route }: {route:string}) {
       cleanups.push(close);
     });
 
-    // Checkout: service and package pickers fed by the catalog embedded in the page.
-    const catalogEl=document.getElementById('yaw-catalog');
-    const checkoutForm=root.querySelector<HTMLFormElement>('form[data-yaw-form="checkout"]');
-    if(catalogEl&&checkoutForm){
-      type Pkg={quantity:string;price:string;originalPrice?:string};
-      type Service={slug:string;name:string;unit:string;linkLabel:string;linkPlaceholder:string;tiers:{key:string;label:string;packages:Pkg[]}[]};
-      const services:Service[]=JSON.parse(catalogEl.textContent||'[]');
-      const serviceSel=checkoutForm.querySelector<HTMLSelectElement>('select[name="service"]')!;
-      const packageSel=checkoutForm.querySelector<HTMLSelectElement>('select[name="package"]')!;
-      const linkInput=checkoutForm.querySelector<HTMLInputElement>('input[name="link"]');
-      const linkLabel=linkInput?.closest('label')?.querySelector('p');
-      const summary=(key:string,text:string)=>all(root,`[data-checkout="${key}"]`).forEach(el=>{el.textContent=text;});
-      const money=(v:string)=>`$${Number(v).toFixed(2).replace(/\.00$/,'')}`;
-      services.forEach(s=>serviceSel.add(new Option(s.name,s.slug)));
-      const params=new URLSearchParams(location.search);
-      const fillPackages=(service:Service,tier?:string|null,index?:string|null)=>{
-        packageSel.innerHTML='';
-        service.tiers.forEach(t=>{
-          const group=document.createElement('optgroup');group.label=t.label;
-          t.packages.forEach((p,i)=>group.appendChild(new Option(`${p.quantity} ${service.unit} · ${money(p.price)}`,`${t.key}:${i}`)));
-          packageSel.appendChild(group);
-        });
-        if(tier&&index!==null&&index!==undefined&&packageSel.querySelector(`option[value="${tier}:${index}"]`))packageSel.value=`${tier}:${index}`;
-      };
-      const update=()=>{
-        const service=services.find(s=>s.slug===serviceSel.value)||services[0];
-        const [tierKey,i]=packageSel.value.split(':');
-        const tier=service.tiers.find(t=>t.key===tierKey);const pkg=tier?.packages[Number(i)];
-        summary('service',service.name);
-        summary('package',pkg?`${pkg.quantity} ${service.unit} · ${tier!.label}`:'—');
-        summary('total',pkg?`${money(pkg.price)} USD`:'—');
-        if(linkLabel)linkLabel.textContent=`${service.linkLabel}*`;
-        if(linkInput)linkInput.placeholder=service.linkPlaceholder;
-        const next=new URLSearchParams({service:service.slug,tier:tierKey||'',package:i||''});
-        history.replaceState(null,'',`${location.pathname}?${next}`);
-      };
-      const initial=services.find(s=>s.slug===params.get('service'))||services[0];
-      serviceSel.value=initial.slug;fillPackages(initial,params.get('tier'),params.get('package'));update();
-      listen(serviceSel,'change',()=>{fillPackages(services.find(s=>s.slug===serviceSel.value)||services[0]);update();});
-      listen(packageSel,'change',update);
-    }
     // My Orders filter pills: signed-out visitors see the matching sign-in prompt.
     const ordersEmpty=root.querySelector<HTMLElement>('[data-orders-empty] h3');
     if(ordersEmpty)all<HTMLInputElement>(root,'input[name="filter"]').forEach(input=>listen(input,'change',()=>{
@@ -277,15 +236,14 @@ export default function TemplateInteractions({ route }: {route:string}) {
       ordersEmpty.textContent=value==='all orders'?'Log in to see your orders':`Log in to see orders that are ${value==='awaiting payment'?'awaiting payment':value}`;
     }));
 
-    // Account and checkout forms post to their own services, never to the contact form endpoint.
-    const yawEndpoints:Record<string,string|undefined>={login:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,signup:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,forgot:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,checkout:process.env.NEXT_PUBLIC_ORDER_ENDPOINT};
+    // Account forms post to their own service, never to the contact form endpoint (checkout lives in Commerce.tsx).
+    const yawEndpoints:Record<string,string|undefined>={login:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,signup:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,forgot:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT};
     const yawOffline:Record<string,string>={
       login:"Accounts aren't connected in this preview yet, so you can't sign in here. Nothing was sent.",
       signup:"Accounts aren't connected in this preview yet, so no account was created. Nothing was sent.",
       forgot:"Accounts aren't connected in this preview yet, so no reset email was sent.",
-      checkout:"Checkout isn't connected to payments in this preview yet. Nothing was charged or sent.",
     };
-    const yawSuccess:Record<string,string>={login:'/orders/',signup:'/orders/',checkout:'/thank-you/'};
+    const yawSuccess:Record<string,string>={login:'/orders/',signup:'/orders/'};
     all<HTMLFormElement>(root,'form[data-yaw-form]').forEach(form=>{
       const kind=form.dataset.yawForm!;
       if(kind==='orders'){listen(form,'submit',e=>e.preventDefault());return;}

@@ -8,29 +8,9 @@ import * as c from 'cheerio';
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const contact = read('data/pages/contact.json');
 const home = read('data/pages/home.json');
-const catalog = read('data/youtubeadwords-catalog.json');
 const routes = read('data/routes.json');
 const homeNav = c.load(home.html, null, false)('nav');
 
-const SERVICE_INFO = {
-  'buy-youtube-views': ['YouTube Views', 'Video link', 'https://youtube.com/watch?v=…'],
-  'buy-youtube-subscribers': ['YouTube Subscribers', 'Channel link', 'https://youtube.com/@yourchannel'],
-  'buy-youtube-likes': ['YouTube Likes', 'Video link', 'https://youtube.com/watch?v=…'],
-  'buy-youtube-watch-hours': ['YouTube Watch Hours', 'Channel link', 'https://youtube.com/@yourchannel'],
-  'buy-google-skip-ads-views': ['Google Skip Ads Views', 'Video link', 'https://youtube.com/watch?v=…'],
-  'buy-google-display-ads-views': ['Google Display Ads Views', 'Video or website link', 'https://…'],
-  'buy-google-apps-download': ['Google Apps Download', 'App store link', 'https://play.google.com/store/apps/details?id=…'],
-  'buy-google-ads-website-traffic': ['Google Ads Website / App Traffic', 'Website or app link', 'https://yourwebsite.com'],
-};
-const DEFAULT_TIERS = { regular: 'Standard', fast: 'Fast', ads: 'Ads' };
-const tabNames = Object.fromEntries(catalog.content.map(item => [item.slug, item.tabs || {}]));
-const checkoutCatalog = catalog.pricing.map(p => {
-  const [name, linkLabel, linkPlaceholder] = SERVICE_INFO[p.slug] || [p.slug, 'Link', 'https://…'];
-  const tiers = [['regular', 'regularPackages'], ['fast', 'fastPackages'], ['ads', 'adsPackages']]
-    .filter(([, key]) => (p[key] || []).length)
-    .map(([tier, key]) => ({ key: tier, label: String(tabNames[p.slug]?.[tier] || DEFAULT_TIERS[tier]).replace(/\s*popular$/i, ''), packages: p[key].map(({ quantity, price, originalPrice }) => ({ quantity, price, originalPrice })) }));
-  return { slug: p.slug, name, unit: p.quantityKey, linkLabel, linkPlaceholder, tiers };
-});
 
 const PAGES = [
   {
@@ -92,22 +72,14 @@ const PAGES = [
     faq: true,
   },
   {
-    key: 'checkout', route: '/checkout', title: 'Checkout | YoutubeADwords', description: 'Choose your package, share a public link and place your YoutubeADwords order.',
-    badge: 'Checkout', words: ['Place', 'your', 'order'], script: 'now', sticker: 'No passwords',
-    subtitle: 'Choose your package, share a public link and follow delivery from My Orders. We never ask for your password.',
-    formTitle: 'Your order', kind: 'checkout', submit: 'Continue to payment',
-    fields: [
-      { label: 'Service', name: 'service', select: true, required: true },
-      { label: 'Package', name: 'package', select: true, required: true },
-      { label: 'Video link', name: 'link', type: 'url', placeholder: 'https://youtube.com/watch?v=…', required: true },
-      { label: 'Email Address', name: 'email', type: 'email', placeholder: 'you@example.com', required: true, autocomplete: 'email' },
-    ],
-    note: 'By continuing, you agree to the <a class="framer-text" href="/terms">Terms of Service</a> and <a class="framer-text" href="/refund-policy">Refund Policy</a>.',
-    chat: { incoming: 'Share a public link only, never a password. After ordering, follow delivery from My Orders.', outgoing: 'Ready to grow 🚀', button: ['Need help? Contact support', '/contact'] },
-    info: [['Service', '—', 'service'], ['Package', '—', 'package'], ['Total', '—', 'total']],
+    key: 'checkout', route: '/checkout', title: 'Checkout | YoutubeADwords', description: 'Review your YoutubeADwords order and pay securely.',
+    badge: 'Checkout', words: ['Review', 'and', 'pay'], script: 'securely', sticker: 'Crypto or card',
+    subtitle: 'Review your order and pay securely. We never ask for your password.',
+    // The checkout itself is rendered by components/Commerce.tsx into this mount point.
+    mount: 'checkout',
+    chat: { incoming: 'Pay with crypto or card. Your order starts as soon as payment is confirmed.', outgoing: 'Is my payment secure? 🔒', button: ['Need help? Contact support', '/contact'] },
+    info: [['Payment', 'Crypto (Cryptomus) or card (Uplef)'], ['Delivery', 'Track every order in My Orders'], ['Support', '24/7 · Replies within 24 hours']],
     faq: true,
-    // Phones get the app-style checkout from components/Commerce.tsx; desktop keeps this form.
-    phoneMount: 'checkout',
   },
   // Phone purchase step after "Buy now" (rendered by components/Commerce.tsx).
   {
@@ -143,10 +115,6 @@ function buildPage(spec) {
     form.replaceWith(`<div class="yaw-mount" data-yaw-mount="${spec.mount}"></div>`);
     buildSide($, spec);
     return finish($, data, spec);
-  }
-  if (spec.phoneMount) {
-    form.attr('data-yaw-desktop-only', '');
-    form.after(`<div class="yaw-mount" data-yaw-phone-only data-yaw-mount="${spec.phoneMount}"></div>`);
   }
   form.attr('data-yaw-form', spec.kind).attr('novalidate', null);
   form.children('input, noscript').remove();
@@ -217,13 +185,10 @@ function buildSide($, spec) {
     ps.eq(1).text(value || '');
     if (key) ps.eq(1).attr('data-checkout', key);
   });
-  // The desktop form fills these summary rows; on phones the checkout shows its own summary.
-  if (spec.phoneMount) side.children('[data-framer-name="Bottom"]').attr('data-yaw-desktop-only', '');
 }
 
 function finish($, data, spec) {
   if (!spec.faq) $('section').filter((i, e) => $(e).find('[data-framer-name="Question"]').length).remove();
-  if (spec.kind === 'checkout') $.root().append(`<script type="application/json" id="yaw-catalog">${JSON.stringify(checkoutCatalog).replace(/</g, '\\u003c')}</script>`);
 
   data.route = spec.route; data.title = spec.title; data.description = spec.description; data.html = $.html();
   fs.writeFileSync(`data/pages/${spec.key}.json`, JSON.stringify(data));

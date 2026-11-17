@@ -230,7 +230,6 @@ a, button, [role="button"], label { -webkit-tap-highlight-color: transparent; }
 /* ================= Phone-only vs desktop-only (desktop keeps the original design) ================= */
 @media (min-width: 810px) {
   [data-yaw-phone-only] { display: none !important; }
-  .yaw-cart-host { display: none !important; }
 }
 @media (max-width: 809.98px) {
   [data-yaw-desktop-only] { display: none !important; }
