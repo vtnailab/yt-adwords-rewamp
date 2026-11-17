@@ -6,6 +6,7 @@ import { animate, inView } from 'framer-motion';
 type Variant = {hash:string; mediaQuery:string};
 type Cleanup = () => void;
 const all = <T extends Element = HTMLElement>(root: ParentNode, selector: string) => Array.from(root.querySelectorAll<T>(selector));
+const marqueeTrackSelector = 'ul[style*="flex-direction:row"],ul[style*="flex-direction: row"]';
 
 /** Owns behavior only. All layout, typography and artwork come from the template. */
 export default function TemplateInteractions({ route }: {route:string}) {
@@ -44,9 +45,11 @@ export default function TemplateInteractions({ route }: {route:string}) {
         transition={...transition,...config.animate.transition};
         if(config.animate.rotate) el.dataset.motionTo=`${config.transformTemplate?.includes('translateX(-50%)')?'translateX(-50%) ':''}rotate(${config.animate.rotate}deg)`;
       }
-      el.style.opacity='0';el.style.transform=from;
+      // Marquee tracks own their transform; animating it here would stop the loop, so they only fade in.
+      const isTrack=el.matches(marqueeTrackSelector);
+      el.style.opacity='0';if(!isTrack)el.style.transform=from;
       const stop=inView(el,()=>{
-        const control=animate(el,{opacity:[0,1],transform:[from,el.dataset.motionTo || to]},{...transition,ease:[.22,1,.36,1]});
+        const control=animate(el,isTrack?{opacity:[0,1]}:{opacity:[0,1],transform:[from,el.dataset.motionTo || to]},{...transition,ease:[.22,1,.36,1]});
         cleanups.push(()=>control.stop());
       },{amount:0.08});
       cleanups.push(stop);
@@ -139,8 +142,9 @@ export default function TemplateInteractions({ route }: {route:string}) {
       const control=animate(0,-distance,{duration:distance/70,ease:'linear',repeat:Infinity,onUpdate:value=>textPath.setAttribute('startOffset',String(value))});
       cleanups.push(()=>control.stop());
     });
-    // Continuous titles and DM cards share the original track gap and speed.
-    if(!reduced)all<HTMLUListElement>(root,'ul[style*="flex-direction:row"],ul[style*="flex-direction: row"]').forEach(track=>{
+    // Continuous tracks: the "Grow with us" title ticker drifts left-to-right; the client DM cards
+    // drift right-to-left, pause on hover and can be dragged (with momentum) in either direction.
+    if(!reduced)all<HTMLUListElement>(root,marqueeTrackSelector).forEach(track=>{
       const items=Array.from(track.children);
       if(!items.length)return;
       const gap=parseFloat(getComputedStyle(track).gap)||0;
@@ -148,9 +152,52 @@ export default function TemplateInteractions({ route }: {route:string}) {
       if(!distance)return;
       const copies=items.map(el=>el.cloneNode(true) as HTMLElement);
       copies.forEach(el=>{el.setAttribute('aria-hidden','true');track.appendChild(el);});
-      const control=animate(track,{x:[0,-distance]},{duration:distance/(track.closest('[data-framer-name="Title Ticker"]')?60:30),ease:'linear',repeat:Infinity});
-      listen(track,'mouseenter',()=>control.pause());listen(track,'mouseleave',()=>control.play());
-      cleanups.push(()=>{control.stop();copies.forEach(el=>el.remove());});
+      const isTitle=!!track.closest('[data-framer-name="Title Ticker"]');
+      const direction=isTitle?1:-1, speed=isTitle?60:30;
+      const surface=track.parentElement||track;
+      let x=isTitle?-distance:0, hovering=false, dragging=false, moved=false, velocity=0;
+      let startX=0, startOffset=0, lastX=0, lastTime=0, frame=0, previous=performance.now();
+      const wrap=(value:number)=>{const v=value%distance;return v>0?v-distance:v;};
+      const tick=(now:number)=>{
+        const dt=Math.min(64,now-previous)/1000;previous=now;
+        if(!dragging){
+          if(Math.abs(velocity)>8){x+=velocity*dt;velocity*=Math.pow(0.04,dt);}
+          else{velocity=0;if(!hovering)x+=direction*speed*dt;}
+        }
+        x=wrap(x);track.style.transform=`translate3d(${x}px,0,0)`;
+        frame=requestAnimationFrame(tick);
+      };
+      frame=requestAnimationFrame(tick);
+      cleanups.push(()=>{cancelAnimationFrame(frame);copies.forEach(el=>el.remove());track.style.transform='';});
+      if(isTitle)return;
+      surface.style.cursor='grab';surface.style.touchAction='pan-y';
+      listen(surface,'mouseenter',()=>{hovering=true;});
+      listen(surface,'mouseleave',()=>{hovering=false;});
+      listen(surface,'dragstart',(e)=>e.preventDefault());
+      listen(surface,'pointerdown',((e:PointerEvent)=>{
+        if(e.button!==0)return;
+        dragging=true;moved=false;velocity=0;startX=lastX=e.clientX;startOffset=x;lastTime=performance.now();
+        surface.setPointerCapture(e.pointerId);surface.style.cursor='grabbing';
+      }) as EventListener);
+      listen(surface,'pointermove',((e:PointerEvent)=>{
+        if(!dragging)return;
+        const now=performance.now(),dx=e.clientX-startX;
+        if(Math.abs(dx)>4)moved=true;
+        x=startOffset+dx;
+        if(now>lastTime){velocity=(e.clientX-lastX)/((now-lastTime)/1000);}
+        lastX=e.clientX;lastTime=now;
+      }) as EventListener);
+      const release=((e:PointerEvent)=>{
+        if(!dragging)return;
+        dragging=false;surface.style.cursor='grab';
+        if(surface.hasPointerCapture(e.pointerId))surface.releasePointerCapture(e.pointerId);
+        if(performance.now()-lastTime>80)velocity=0;
+        velocity=Math.max(-2500,Math.min(2500,velocity));
+      }) as EventListener;
+      listen(surface,'pointerup',release);listen(surface,'pointercancel',release);
+      // Swallow the click that follows a drag so links inside cards don't fire.
+      const swallow=(e:Event)=>{if(moved){e.preventDefault();e.stopPropagation();moved=false;}};
+      surface.addEventListener('click',swallow,true);cleanups.push(()=>surface.removeEventListener('click',swallow,true));
     });
 
     all(root,'[data-framer-name="Menu Button"]').forEach(button=>{
@@ -159,7 +206,7 @@ export default function TemplateInteractions({ route }: {route:string}) {
       action(button,()=>{
         if(menu){close();return;}
         menu=document.createElement('nav');menu.className='clone-mobile-menu';menu.setAttribute('aria-label','Main navigation');
-        const links=[['YouTube','/youtube-services/'],['Google Ads','/google-ads/'],['About','/about-us/'],['Blog','/blog/'],['Contact','/contact/'],['My Orders','https://youtubeadwords.long-bar-2706.workers.dev/orders']];
+        const links=[['YouTube','/youtube-services/'],['Google Ads','/google-ads/'],['About','/about-us/'],['Blog','/blog/'],['Contact','/contact/'],['My Orders','/orders/'],['Login','/login/']];
         links.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;menu!.appendChild(a);});
         document.body.appendChild(menu);button.setAttribute('aria-expanded','true');
         if(!reduced)animate(menu,{opacity:[0,1],y:[-12,0]},{duration:.25});
@@ -169,7 +216,90 @@ export default function TemplateInteractions({ route }: {route:string}) {
       cleanups.push(close);
     });
 
-    all<HTMLFormElement>(root,'form').forEach(form=>{
+    // Checkout: service and package pickers fed by the catalog embedded in the page.
+    const catalogEl=document.getElementById('yaw-catalog');
+    const checkoutForm=root.querySelector<HTMLFormElement>('form[data-yaw-form="checkout"]');
+    if(catalogEl&&checkoutForm){
+      type Pkg={quantity:string;price:string;originalPrice?:string};
+      type Service={slug:string;name:string;unit:string;linkLabel:string;linkPlaceholder:string;tiers:{key:string;label:string;packages:Pkg[]}[]};
+      const services:Service[]=JSON.parse(catalogEl.textContent||'[]');
+      const serviceSel=checkoutForm.querySelector<HTMLSelectElement>('select[name="service"]')!;
+      const packageSel=checkoutForm.querySelector<HTMLSelectElement>('select[name="package"]')!;
+      const linkInput=checkoutForm.querySelector<HTMLInputElement>('input[name="link"]');
+      const linkLabel=linkInput?.closest('label')?.querySelector('p');
+      const summary=(key:string,text:string)=>all(root,`[data-checkout="${key}"]`).forEach(el=>{el.textContent=text;});
+      const money=(v:string)=>`$${Number(v).toFixed(2).replace(/\.00$/,'')}`;
+      services.forEach(s=>serviceSel.add(new Option(s.name,s.slug)));
+      const params=new URLSearchParams(location.search);
+      const fillPackages=(service:Service,tier?:string|null,index?:string|null)=>{
+        packageSel.innerHTML='';
+        service.tiers.forEach(t=>{
+          const group=document.createElement('optgroup');group.label=t.label;
+          t.packages.forEach((p,i)=>group.appendChild(new Option(`${p.quantity} ${service.unit} · ${money(p.price)}`,`${t.key}:${i}`)));
+          packageSel.appendChild(group);
+        });
+        if(tier&&index!==null&&index!==undefined&&packageSel.querySelector(`option[value="${tier}:${index}"]`))packageSel.value=`${tier}:${index}`;
+      };
+      const update=()=>{
+        const service=services.find(s=>s.slug===serviceSel.value)||services[0];
+        const [tierKey,i]=packageSel.value.split(':');
+        const tier=service.tiers.find(t=>t.key===tierKey);const pkg=tier?.packages[Number(i)];
+        summary('service',service.name);
+        summary('package',pkg?`${pkg.quantity} ${service.unit} · ${tier!.label}`:'—');
+        summary('total',pkg?`${money(pkg.price)} USD`:'—');
+        if(linkLabel)linkLabel.textContent=`${service.linkLabel}*`;
+        if(linkInput)linkInput.placeholder=service.linkPlaceholder;
+        const next=new URLSearchParams({service:service.slug,tier:tierKey||'',package:i||''});
+        history.replaceState(null,'',`${location.pathname}?${next}`);
+      };
+      const initial=services.find(s=>s.slug===params.get('service'))||services[0];
+      serviceSel.value=initial.slug;fillPackages(initial,params.get('tier'),params.get('package'));update();
+      listen(serviceSel,'change',()=>{fillPackages(services.find(s=>s.slug===serviceSel.value)||services[0]);update();});
+      listen(packageSel,'change',update);
+    }
+    // My Orders filter pills: signed-out visitors see the matching sign-in prompt.
+    const ordersEmpty=root.querySelector<HTMLElement>('[data-orders-empty] h3');
+    if(ordersEmpty)all<HTMLInputElement>(root,'input[name="filter"]').forEach(input=>listen(input,'change',()=>{
+      const value=input.value.toLowerCase();
+      ordersEmpty.textContent=value==='all orders'?'Log in to see your orders':`Log in to see orders that are ${value==='awaiting payment'?'awaiting payment':value}`;
+    }));
+
+    // Account and checkout forms post to their own services, never to the contact form endpoint.
+    const yawEndpoints:Record<string,string|undefined>={login:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,signup:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,forgot:process.env.NEXT_PUBLIC_ACCOUNT_ENDPOINT,checkout:process.env.NEXT_PUBLIC_ORDER_ENDPOINT};
+    const yawOffline:Record<string,string>={
+      login:"Accounts aren't connected in this preview yet, so you can't sign in here. Nothing was sent.",
+      signup:"Accounts aren't connected in this preview yet, so no account was created. Nothing was sent.",
+      forgot:"Accounts aren't connected in this preview yet, so no reset email was sent.",
+      checkout:"Checkout isn't connected to payments in this preview yet. Nothing was charged or sent.",
+    };
+    const yawSuccess:Record<string,string>={login:'/orders/',signup:'/orders/',checkout:'/thank-you/'};
+    all<HTMLFormElement>(root,'form[data-yaw-form]').forEach(form=>{
+      const kind=form.dataset.yawForm!;
+      if(kind==='orders'){listen(form,'submit',e=>e.preventDefault());return;}
+      listen(form,'submit',async(event)=>{
+        event.preventDefault();
+        let status=form.querySelector<HTMLElement>('.clone-form-status');
+        if(!status){status=document.createElement('p');status.className='clone-form-status';status.setAttribute('role','status');form.appendChild(status);}
+        const password=form.querySelector<HTMLInputElement>('input[name="password"]');
+        const confirm=form.querySelector<HTMLInputElement>('input[name="confirmPassword"]');
+        if(confirm&&password)confirm.setCustomValidity(confirm.value&&confirm.value!==password.value?'Passwords do not match.':'');
+        if(!form.reportValidity())return;
+        const endpoint=yawEndpoints[kind];
+        if(!endpoint){status.textContent=yawOffline[kind];return;}
+        const button=form.querySelector<HTMLButtonElement>('button[type="submit"]');if(button)button.disabled=true;
+        status.textContent='Sending…';
+        try{
+          const result=await fetch(endpoint,{method:'POST',body:new FormData(form),credentials:'include'});
+          if(!result.ok)throw new Error();
+          const body=await result.json().catch(()=>({})) as {redirect?:string};
+          if(body.redirect){window.location.assign(body.redirect);return;}
+          if(yawSuccess[kind])window.location.assign(yawSuccess[kind]);else status.textContent='Done. Check your inbox for the next step.';
+        }catch{status.textContent='Something went wrong. Please try again.';}
+        finally{if(button)button.disabled=false;}
+      });
+    });
+
+    all<HTMLFormElement>(root,'form:not([data-yaw-form])').forEach(form=>{
       listen(form,'submit',async(event)=>{
         event.preventDefault();if(!form.reportValidity())return;
         let status=form.querySelector<HTMLElement>('.clone-form-status');

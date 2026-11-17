@@ -14,19 +14,22 @@ Open http://localhost:3000. `npm run build` produces the static export in `out/`
 ## Content
 
 - `data/blog-posts.json`: seven local editorial guides with author and content provenance.
-- `data/pages/`: 47 routes, including YouTube and Google Ads service directories, eight product pages, About, Contact, and source company policies. Legacy template URLs remain compatible.
+- `data/pages/`: 52 routes, including YouTube and Google Ads service directories, eight product pages, About, Contact, source company policies, and the account and ordering pages (Login, Sign Up, Forgot Password, My Orders, Checkout). Legacy template URLs remain compatible.
+- `scripts/build-account-pages.mjs`: regenerates the account and ordering pages from the Contact page template. Re-run it after changing the Contact page, nav or footer.
 - `data/youtubeadwords-catalog.json`: all eight services' published pricing tiers, including regular, fast, ads and country-targeted options. Also includes the source's four YouTube service content objects and FAQs.
 - `data/youtubeadwords-source.json`: source-page content captured on 17 November 2026.
-- `data/service-catalog.json`: service labels, starting prices, and existing purchase destinations.
+- `data/service-catalog.json`: service labels, starting prices, and local checkout destinations.
 - `components/TemplateInteractions.tsx`: responsive variants, Framer Motion animations, tickers, FAQs, case selector, mobile menu, and local form validation.
 
 Source: https://youtubeadwords.long-bar-2706.workers.dev/
 
-Prices are a captured USD snapshot, not a live pricing feed. Product cards link to the existing site's purchase flow; login and orders also use the existing site. No accounts, order records or private customer data were accessed or migrated. The source blog could not load during review. Seven new editorial guides based on the imported service catalogue are provided locally; they are not recovered source-site posts. Edit them in `data/blog-posts.json`.
+Prices are a captured USD snapshot, not a live pricing feed. Every link stays on this site: package cards open `/checkout` with the chosen service and package, and Login, Sign Up, My Orders and Tickets / Support are local pages. No accounts, order records or private customer data were accessed or migrated. The source blog could not load during review. Seven new editorial guides based on the imported service catalogue are provided locally; they are not recovered source-site posts. Edit them in `data/blog-posts.json`.
 
 All package tiers and the complete captured service text are available under each product page's “All packages, features and service details” accordion.
 
-Forms validate locally. Set `NEXT_PUBLIC_FORM_ENDPOINT` to an authorized form handler to deliver submissions. Without it, the preview explicitly states that nothing was sent. This frontend does not implement a payment, account or support backend.
+Forms validate locally. Set `NEXT_PUBLIC_FORM_ENDPOINT` to an authorized form handler to deliver contact submissions. Login, sign-up and password-reset forms post only to `NEXT_PUBLIC_ACCOUNT_ENDPOINT`, and checkout posts only to `NEXT_PUBLIC_ORDER_ENDPOINT` (a JSON response with `redirect` sends the visitor on, e.g. to payment). Without these, each form explicitly states that nothing was sent or charged. This frontend does not implement a payment, account or support backend.
+
+The hero camera photo (`public/assets/hero-camera*.jpg`, also on About) and the "Real, Safe growth" and featured blog photos (`public/assets/creator-*.jpg`, also on Blog) are free Pexels photos (Pexels License). The About us button uses the red "AD" brand mark (`public/assets/yaw-mark.svg`).
 
 Original design: Growth Haus by Webestica. Existing template artwork and photographs are preserved at the user's request. Claims and testimonials are adapted from the supplied business site, not independently verified.
 

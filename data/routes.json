@@ -233,5 +233,30 @@
     "route": "/blog/google-app-install-packages",
     "key": "blog__google-app-install-packages",
     "title": "Get app installs with Google Ads | YoutubeADwords"
+  },
+  {
+    "route": "/login",
+    "key": "login",
+    "title": "Login | YoutubeADwords"
+  },
+  {
+    "route": "/signup",
+    "key": "signup",
+    "title": "Sign Up | YoutubeADwords"
+  },
+  {
+    "route": "/forgot-password",
+    "key": "forgot-password",
+    "title": "Reset Password | YoutubeADwords"
+  },
+  {
+    "route": "/orders",
+    "key": "orders",
+    "title": "My Orders | YoutubeADwords"
+  },
+  {
+    "route": "/checkout",
+    "key": "checkout",
+    "title": "Checkout | YoutubeADwords"
   }
 ]
