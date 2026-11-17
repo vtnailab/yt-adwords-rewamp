@@ -13,7 +13,8 @@ Open http://localhost:3000. `npm run build` produces the static export in `out/`
 
 ## Content
 
-- `data/pages/`: 40 routes, including YouTube and Google Ads service directories, eight product pages, About, Contact, and source company policies. Legacy template URLs remain compatible.
+- `data/blog-posts.json`: seven local editorial guides with author and content provenance.
+- `data/pages/`: 47 routes, including YouTube and Google Ads service directories, eight product pages, About, Contact, and source company policies. Legacy template URLs remain compatible.
 - `data/youtubeadwords-catalog.json`: all eight services' published pricing tiers, including regular, fast, ads and country-targeted options. Also includes the source's four YouTube service content objects and FAQs.
 - `data/youtubeadwords-source.json`: source-page content captured on 17 November 2026.
 - `data/service-catalog.json`: service labels, starting prices, and existing purchase destinations.
@@ -21,7 +22,7 @@ Open http://localhost:3000. `npm run build` produces the static export in `out/`
 
 Source: https://youtubeadwords.long-bar-2706.workers.dev/
 
-Prices are a captured USD snapshot, not a live pricing feed. Product cards link to the existing site's purchase flow; login, orders and blog also use the existing site. No accounts, order records or private customer data were accessed or migrated. The source blog could not load during review, so no article content was invented. Resource cards use service information instead.
+Prices are a captured USD snapshot, not a live pricing feed. Product cards link to the existing site's purchase flow; login and orders also use the existing site. No accounts, order records or private customer data were accessed or migrated. The source blog could not load during review. Seven new editorial guides based on the imported service catalogue are provided locally; they are not recovered source-site posts. Edit them in `data/blog-posts.json`.
 
 All package tiers and the complete captured service text are available under each product page's “All packages, features and service details” accordion.
 

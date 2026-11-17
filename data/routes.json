@@ -7,42 +7,42 @@
   {
     "route": "/blog",
     "key": "blog",
-    "title": "YoutubeADwords — YouTube & Google Ads Services"
+    "title": "Blog | YoutubeADwords"
   },
   {
     "route": "/blog/faceless-reels-that-still-build-trust-8-formats",
     "key": "blog__faceless-reels-that-still-build-trust-8-formats",
-    "title": "Buy Google Ads Website / App Traffic | YoutubeADwords"
+    "title": "Buy YouTube Views: packages for your next video | YoutubeADwords"
   },
   {
     "route": "/blog/how-to-pitch-a-collab-when-your-account-is-small",
     "key": "blog__how-to-pitch-a-collab-when-your-account-is-small",
-    "title": "Buy YouTube Views | YoutubeADwords"
+    "title": "Grow your reach with Google Ads campaigns | YoutubeADwords"
   },
   {
     "route": "/blog/how-to-sell-in-the-dms-without-sounding-like-a-bot",
     "key": "blog__how-to-sell-in-the-dms-without-sounding-like-a-bot",
-    "title": "Buy YouTube Subscribers | YoutubeADwords"
+    "title": "Choose a service, share a link, track your order | YoutubeADwords"
   },
   {
     "route": "/blog/niche-down-without-boxing-yourself-in-the-3-pillar-method",
     "key": "blog__niche-down-without-boxing-yourself-in-the-3-pillar-method",
-    "title": "Buy YouTube Likes | YoutubeADwords"
+    "title": "Grow your audience with YouTube subscribers | YoutubeADwords"
   },
   {
     "route": "/blog/the-3-second-rule-why-reels-lose-viewers-before-the-hook",
     "key": "blog__the-3-second-rule-why-reels-lose-viewers-before-the-hook",
-    "title": "Buy YouTube Watch Hours | YoutubeADwords"
+    "title": "Explore YouTube likes packages | YoutubeADwords"
   },
   {
     "route": "/blog/the-5-frame-story-sequence-i-use-to-sell-every-week",
     "key": "blog__the-5-frame-story-sequence-i-use-to-sell-every-week",
-    "title": "Buy Google Skip Ads Views | YoutubeADwords"
+    "title": "Build your viewing time with YouTube Watch Hours | YoutubeADwords"
   },
   {
     "route": "/blog/the-save-worthy-carousel-a-7-slide-structure-that-gets-bookmarked",
     "key": "blog__the-save-worthy-carousel-a-7-slide-structure-that-gets-bookmarked",
-    "title": "Buy Google Display Ads Views | YoutubeADwords"
+    "title": "Get app installs with Google Ads | YoutubeADwords"
   },
   {
     "route": "/book-a-call",
@@ -97,12 +97,12 @@
   {
     "route": "/legal-pages/privacy-policy",
     "key": "legal-pages__privacy-policy",
-    "title": "Login | YoutubeADwords"
+    "title": "Privacy Policy | YoutubeADwords"
   },
   {
     "route": "/legal-pages/terms-conditions",
     "key": "legal-pages__terms-conditions",
-    "title": "Login | YoutubeADwords"
+    "title": "Terms of Service | YoutubeADwords"
   },
   {
     "route": "/link-in-bio",
@@ -198,5 +198,40 @@
     "route": "/buy-google-ads-website-traffic",
     "key": "buy-google-ads-website-traffic",
     "title": "Buy Google Ads Website / App Traffic | YoutubeADwords"
+  },
+  {
+    "route": "/blog/choosing-youtube-views",
+    "key": "blog__choosing-youtube-views",
+    "title": "Buy YouTube Views: packages for your next video | YoutubeADwords"
+  },
+  {
+    "route": "/blog/google-ads-services-explained",
+    "key": "blog__google-ads-services-explained",
+    "title": "Grow your reach with Google Ads campaigns | YoutubeADwords"
+  },
+  {
+    "route": "/blog/how-to-place-and-track-an-order",
+    "key": "blog__how-to-place-and-track-an-order",
+    "title": "Choose a service, share a link, track your order | YoutubeADwords"
+  },
+  {
+    "route": "/blog/youtube-subscriber-packages",
+    "key": "blog__youtube-subscriber-packages",
+    "title": "Grow your audience with YouTube subscribers | YoutubeADwords"
+  },
+  {
+    "route": "/blog/youtube-likes-packages",
+    "key": "blog__youtube-likes-packages",
+    "title": "Explore YouTube likes packages | YoutubeADwords"
+  },
+  {
+    "route": "/blog/youtube-watch-hours-packages",
+    "key": "blog__youtube-watch-hours-packages",
+    "title": "Build your viewing time with YouTube Watch Hours | YoutubeADwords"
+  },
+  {
+    "route": "/blog/google-app-install-packages",
+    "key": "blog__google-app-install-packages",
+    "title": "Get app installs with Google Ads | YoutubeADwords"
   }
 ]

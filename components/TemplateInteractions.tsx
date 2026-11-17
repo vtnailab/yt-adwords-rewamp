@@ -107,6 +107,31 @@ export default function TemplateInteractions({ route }: {route:string}) {
       });select(0,true);
     });
 
+    // The curved ticker's path only spans x=-120..1320 of its 1200-wide viewBox, so on screens
+    // wider than 1440px the band stops short of the edges. Extend both ends flat to the viewport edges.
+    all<SVGSVGElement>(root,'[data-framer-name="Curved Ticker"] svg').forEach(svg=>{
+      const paths=all<SVGPathElement>(svg,'path');
+      const original=paths[0]?.getAttribute('d');
+      if(!original)return;
+      const points=[...original.matchAll(/[ML]\s*(-?[\d.]+)[\s,]+(-?[\d.]+)/g)].map(m=>[Number(m[1]),Number(m[2])]);
+      if(points.length<2)return;
+      const [first,last]=[points[0],points[points.length-1]];
+      const viewBoxWidth=svg.viewBox.baseVal?.width||1200;
+      const fit=()=>{
+        const width=svg.clientWidth,height=svg.clientHeight;
+        if(!width||!height)return;
+        const scale=Math.min(width/viewBoxWidth,height/(svg.viewBox.baseVal?.height||140));
+        const half=width/scale/2+40;
+        const left=viewBoxWidth/2-half,right=viewBoxWidth/2+half;
+        let d=original;
+        if(left<first[0])d=`M${left.toFixed(2)} ${first[1]} L`+d.replace(/^M\s*/,'');
+        if(right>last[0])d+=` L${right.toFixed(2)} ${last[1]}`;
+        paths.forEach(path=>path.setAttribute('d',d));
+      };
+      fit();
+      const observer=new ResizeObserver(fit);observer.observe(svg);
+      cleanups.push(()=>{observer.disconnect();paths.forEach(path=>path.setAttribute('d',original));});
+    });
     // Original curved SVG ticker, driven by Motion rather than Framer's runtime.
     if(!reduced)all<SVGTextPathElement>(root,'textPath').forEach(textPath=>{
       const distance=textPath.getComputedTextLength()/4;
@@ -134,7 +159,7 @@ export default function TemplateInteractions({ route }: {route:string}) {
       action(button,()=>{
         if(menu){close();return;}
         menu=document.createElement('nav');menu.className='clone-mobile-menu';menu.setAttribute('aria-label','Main navigation');
-        const links=[['YouTube','/youtube-services/'],['Google Ads','/google-ads/'],['About','/about-us/'],['Blog','https://youtubeadwords.long-bar-2706.workers.dev/blog'],['Contact','/contact/'],['My Orders','https://youtubeadwords.long-bar-2706.workers.dev/orders']];
+        const links=[['YouTube','/youtube-services/'],['Google Ads','/google-ads/'],['About','/about-us/'],['Blog','/blog/'],['Contact','/contact/'],['My Orders','https://youtubeadwords.long-bar-2706.workers.dev/orders']];
         links.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;menu!.appendChild(a);});
         document.body.appendChild(menu);button.setAttribute('aria-expanded','true');
         if(!reduced)animate(menu,{opacity:[0,1],y:[-12,0]},{duration:.25});
