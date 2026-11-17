@@ -1,0 +1,202 @@
+[
+  {
+    "route": "/about",
+    "key": "about",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/blog",
+    "key": "blog",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/blog/faceless-reels-that-still-build-trust-8-formats",
+    "key": "blog__faceless-reels-that-still-build-trust-8-formats",
+    "title": "Buy Google Ads Website / App Traffic | YoutubeADwords"
+  },
+  {
+    "route": "/blog/how-to-pitch-a-collab-when-your-account-is-small",
+    "key": "blog__how-to-pitch-a-collab-when-your-account-is-small",
+    "title": "Buy YouTube Views | YoutubeADwords"
+  },
+  {
+    "route": "/blog/how-to-sell-in-the-dms-without-sounding-like-a-bot",
+    "key": "blog__how-to-sell-in-the-dms-without-sounding-like-a-bot",
+    "title": "Buy YouTube Subscribers | YoutubeADwords"
+  },
+  {
+    "route": "/blog/niche-down-without-boxing-yourself-in-the-3-pillar-method",
+    "key": "blog__niche-down-without-boxing-yourself-in-the-3-pillar-method",
+    "title": "Buy YouTube Likes | YoutubeADwords"
+  },
+  {
+    "route": "/blog/the-3-second-rule-why-reels-lose-viewers-before-the-hook",
+    "key": "blog__the-3-second-rule-why-reels-lose-viewers-before-the-hook",
+    "title": "Buy YouTube Watch Hours | YoutubeADwords"
+  },
+  {
+    "route": "/blog/the-5-frame-story-sequence-i-use-to-sell-every-week",
+    "key": "blog__the-5-frame-story-sequence-i-use-to-sell-every-week",
+    "title": "Buy Google Skip Ads Views | YoutubeADwords"
+  },
+  {
+    "route": "/blog/the-save-worthy-carousel-a-7-slide-structure-that-gets-bookmarked",
+    "key": "blog__the-save-worthy-carousel-a-7-slide-structure-that-gets-bookmarked",
+    "title": "Buy Google Display Ads Views | YoutubeADwords"
+  },
+  {
+    "route": "/book-a-call",
+    "key": "book-a-call",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/case",
+    "key": "case",
+    "title": "Google Ads Services | YoutubeADwords"
+  },
+  {
+    "route": "/case/danny.cuts",
+    "key": "case__danny.cuts",
+    "title": "Buy Google Apps Download | YoutubeADwords"
+  },
+  {
+    "route": "/case/jess.copywrites",
+    "key": "case__jess.copywrites",
+    "title": "Buy Google Ads Website / App Traffic | YoutubeADwords"
+  },
+  {
+    "route": "/case/lea.paints",
+    "key": "case__lea.paints",
+    "title": "Buy YouTube Views | YoutubeADwords"
+  },
+  {
+    "route": "/case/maya.makes.bread",
+    "key": "case__maya.makes.bread",
+    "title": "Buy YouTube Subscribers | YoutubeADwords"
+  },
+  {
+    "route": "/case/studio.nora",
+    "key": "case__studio.nora",
+    "title": "Buy YouTube Likes | YoutubeADwords"
+  },
+  {
+    "route": "/case/theo.fitlab",
+    "key": "case__theo.fitlab",
+    "title": "Buy YouTube Watch Hours | YoutubeADwords"
+  },
+  {
+    "route": "/contact",
+    "key": "contact",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/",
+    "key": "home",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/legal-pages/privacy-policy",
+    "key": "legal-pages__privacy-policy",
+    "title": "Login | YoutubeADwords"
+  },
+  {
+    "route": "/legal-pages/terms-conditions",
+    "key": "legal-pages__terms-conditions",
+    "title": "Login | YoutubeADwords"
+  },
+  {
+    "route": "/link-in-bio",
+    "key": "link-in-bio",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/mentorship",
+    "key": "mentorship",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/service",
+    "key": "service",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/thank-you",
+    "key": "thank-you",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/about-us",
+    "key": "about-us",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/youtube-services",
+    "key": "youtube-services",
+    "title": "YoutubeADwords — YouTube & Google Ads Services"
+  },
+  {
+    "route": "/google-ads",
+    "key": "google-ads",
+    "title": "Google Ads Services | YoutubeADwords"
+  },
+  {
+    "route": "/privacy-policy",
+    "key": "privacy-policy",
+    "title": "Privacy Policy | YoutubeADwords"
+  },
+  {
+    "route": "/terms",
+    "key": "terms",
+    "title": "Terms of Service | YoutubeADwords"
+  },
+  {
+    "route": "/refund-policy",
+    "key": "refund-policy",
+    "title": "Refund Policy | YoutubeADwords"
+  },
+  {
+    "route": "/cookies",
+    "key": "cookies",
+    "title": "Cookies Settings | YoutubeADwords"
+  },
+  {
+    "route": "/buy-youtube-views",
+    "key": "buy-youtube-views",
+    "title": "Buy YouTube Views | YoutubeADwords"
+  },
+  {
+    "route": "/buy-youtube-subscribers",
+    "key": "buy-youtube-subscribers",
+    "title": "Buy YouTube Subscribers | YoutubeADwords"
+  },
+  {
+    "route": "/buy-youtube-likes",
+    "key": "buy-youtube-likes",
+    "title": "Buy YouTube Likes | YoutubeADwords"
+  },
+  {
+    "route": "/buy-youtube-watch-hours",
+    "key": "buy-youtube-watch-hours",
+    "title": "Buy YouTube Watch Hours | YoutubeADwords"
+  },
+  {
+    "route": "/buy-google-skip-ads-views",
+    "key": "buy-google-skip-ads-views",
+    "title": "Buy Google Skip Ads Views | YoutubeADwords"
+  },
+  {
+    "route": "/buy-google-display-ads-views",
+    "key": "buy-google-display-ads-views",
+    "title": "Buy Google Display Ads Views | YoutubeADwords"
+  },
+  {
+    "route": "/buy-google-apps-download",
+    "key": "buy-google-apps-download",
+    "title": "Buy Google Apps Download | YoutubeADwords"
+  },
+  {
+    "route": "/buy-google-ads-website-traffic",
+    "key": "buy-google-ads-website-traffic",
+    "title": "Buy Google Ads Website / App Traffic | YoutubeADwords"
+  }
+]

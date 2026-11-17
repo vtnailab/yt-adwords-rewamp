@@ -1,0 +1,58 @@
+[
+  {
+    "slug": "youtube-views",
+    "title": "YouTube Views",
+    "quantity": "100 views",
+    "price": "$1.34",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-youtube-views"
+  },
+  {
+    "slug": "youtube-subscribers",
+    "title": "YouTube Subscribers",
+    "quantity": "100 subscribers",
+    "price": "$5.03",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-youtube-subscribers"
+  },
+  {
+    "slug": "youtube-likes",
+    "title": "YouTube Likes",
+    "quantity": "20 likes",
+    "price": "$0.53",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-youtube-likes"
+  },
+  {
+    "slug": "youtube-watch-hours",
+    "title": "YouTube Watch Hours",
+    "quantity": "1,000 hours",
+    "price": "$80.55",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-youtube-watch-hours"
+  },
+  {
+    "slug": "google-skip-ads-views",
+    "title": "Google Skip Ads Views",
+    "quantity": "50K views",
+    "price": "$100",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-google-skip-ads-views"
+  },
+  {
+    "slug": "google-display-ads-views",
+    "title": "Google Display Ads Views",
+    "quantity": "50K views",
+    "price": "$80",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-google-display-ads-views"
+  },
+  {
+    "slug": "google-apps-download",
+    "title": "Google Apps Download",
+    "quantity": "5K installs",
+    "price": "$300",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-google-apps-download"
+  },
+  {
+    "slug": "google-ads-website-traffic",
+    "title": "Google Ads Website / App Traffic",
+    "quantity": "50K visits",
+    "price": "$100",
+    "checkout": "https://youtubeadwords.long-bar-2706.workers.dev/buy-google-ads-website-traffic"
+  }
+]
